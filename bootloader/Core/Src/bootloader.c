@@ -12,8 +12,8 @@
 typedef void (*pFunction)(void);
 
 void jumpToApp(uint32_t AppAddress){
-	uint32_t resetHandlerAddr = *(volatile uint32_t*)(AppAddress + 4);
-	pFunction appResetHandler = (pFunction)resetHandlerAddr;
+	uint32_t resetHandlerAddr = *(volatile uint32_t*)(AppAddress + 4); 	//Reset Handler Address
+	pFunction appResetHandler = (pFunction)resetHandlerAddr;			//Reset Handler Function
 
 	HAL_RCC_DeInit();
 	HAL_DeInit();
@@ -29,7 +29,7 @@ void jumpToApp(uint32_t AppAddress){
 
 }
 
-
+// two Examples function for two different Addresses
 void jumpToFirmware1(void) {
     jumpToApp(FIRMWARE1_BASE_ADDR);
 }
