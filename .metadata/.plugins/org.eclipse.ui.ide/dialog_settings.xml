@@ -9,6 +9,9 @@
 		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
 		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
 		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\Firmware2"/>
+			<item value="C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\Firmware1"/>
+			<item value="C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\bootloader_writer"/>
 			<item value="C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\bootloader"/>
 		</list>
 	</section>
