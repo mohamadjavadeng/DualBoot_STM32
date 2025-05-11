@@ -35,15 +35,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define ALLOCATED_SIZE			512	//512 KB for each Application (2048 pages or 128 sector)
-#define SECTOR_FIRMWARE1		0
-#define SECTOR_FIRMWARE2		128
-#define ALLOCATED_SECTOR		128
-#define CHUNCKSIZE 				1024
-#define FIRMWARE_SIZE		8428
+#define ALLOCATED_SIZE			512		//512 KB for each Application (2048 pages or 128 sector)
+#define SECTOR_FIRMWARE1		0		//Number of Sector Allocated to the first firmware on W25Q32
+#define SECTOR_FIRMWARE2		128		//Number of Sector Allocated to the Second firmware on W25Q32
+#define ALLOCATED_SECTOR		128		//Numbers of sector for each firmware
+#define CHUNCKSIZE 				1024	//Batch size for reading data from W25Q
+#define FIRMWARE_SIZE			8428	//Size of the Firmware
 
-#define FIRMWARE1_PAGE_W25Q		0
-#define FIRMWARE2_PAGE_W25Q		2048
+#define FIRMWARE1_PAGE_W25Q		0		//First Page of W25Q Flash for First firmware
+#define FIRMWARE2_PAGE_W25Q		2048	//First Page of W25Q Flash for Second firmware
 
 /* USER CODE END PD */
 
@@ -53,9 +53,9 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-SPI_HandleTypeDef hspi2;
+SPI_HandleTypeDef hspi2;				// SPI connected to W25Q
 
-UART_HandleTypeDef huart3;
+UART_HandleTypeDef huart3;				// Debugging USART
 
 /* USER CODE BEGIN PV */
 extern char debugStr[30];
@@ -97,6 +97,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	}
 }
 
+// Function to copy Firmware from W25Q to Flash of the MCU
 void AppCopierFromW25Q(uint32_t AppAddress, uint32_t W25QPageAddress, int32_t FirmwareSize){
 
 
@@ -165,6 +166,8 @@ int main(void)
   MX_SPI2_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  //Receive the command from USART
   HAL_UART_Transmit(&huart3, (uint8_t*)ascii_art, strlen(ascii_art), HAL_MAX_DELAY);
   HAL_UART_Transmit(&huart3, (uint8_t *) "Please Enter With Firmware 1/2?", 32, 100);
   __HAL_UART_ENABLE_IT(&huart3, UART_IT_RXNE);
@@ -183,20 +186,22 @@ int main(void)
 	  case 1:
 		  strcpy(debugStr, "\r\nJump to Firmware1\r\n");
 		  debugTransmit();
+		  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+		  HAL_Delay(1000);
 		  jumpTo = 0;
 		  pageNumber = SECTOR_FIRMWARE1 * 16;
 		  AppCopierFromW25Q(FIRMWARE1_BASE_ADDR, pageNumber, FIRMWARE_SIZE);
-		  jumpToApp(FIRMWARE1_BASE_ADDR);
-//		  jumpToFirmware1();
+		  jumpToApp(FIRMWARE1_BASE_ADDR);									//Function to Jump to the reset handler of the firmware
 		  break;
 	  case 2:
 		  strcpy(debugStr, "\r\nJump to Firmware2\r\n");
 		  debugTransmit();
+		  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+		  HAL_Delay(1000);
 		  jumpTo = 0;
 		  pageNumber = SECTOR_FIRMWARE2 * 16;
 		  AppCopierFromW25Q(FIRMWARE2_BASE_ADDR, pageNumber, FIRMWARE_SIZE);
-		  jumpToApp(FIRMWARE2_BASE_ADDR);
-//		  jumpToFirmware2();
+		  jumpToApp(FIRMWARE2_BASE_ADDR);									//Function to Jump to the reset handler of the firmware
 		  break;
 	  default:
 		  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
