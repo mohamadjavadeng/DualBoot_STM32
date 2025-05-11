@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "W25Qxx.h"
+#include "W25Qxx.h"		//Library for working with W25Q
 #include "stdio.h"
 #include "string.h"
 /* USER CODE END Includes */
@@ -33,17 +33,17 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define CHUNCKSIZE 1024
-#define FIRMWARE1_BASE_ADDR 0x08008000
-#define FIRMWARE2_BASE_ADDR 0x08040000
+#define CHUNKSIZE 				1024
+#define FIRMWARE1_BASE_ADDR 	0x08008000
+#define FIRMWARE2_BASE_ADDR 	0x08040000
 
-#define ALLOCATED_SIZE		512	//512 KB for each Application (2048 pages or 128 sector)
+#define ALLOCATED_SIZE			512	//512 KB for each Application (2048 pages or 128 sector)
 #define SECTOR_FIRMWARE1		0
 #define SECTOR_FIRMWARE2		128
 #define ALLOCATED_SECTOR		20
 
-#define FIRMWARE1_SIZE		8428
-#define FIRMWARE2_SIZE		8428
+#define FIRMWARE1_SIZE			8428
+#define FIRMWARE2_SIZE			8428
 
 #define FIRMWARE1_PAGE_W25Q		0
 #define FIRMWARE2_PAGE_W25Q		2048
@@ -62,8 +62,9 @@ SPI_HandleTypeDef hspi2;
 
 UART_HandleTypeDef huart3;
 
+
 /* USER CODE BEGIN PV */
-uint8_t MCUFLASHREAD[CHUNCKSIZE];
+uint8_t MCUFLASHREAD[CHUNKSIZE];
 uint8_t USART_CMD_REC[2];
 uint8_t	CommandNumber = 0;
 
@@ -88,39 +89,33 @@ void WRITE_TO_FLASHW25Q(uint32_t AppAddress, uint32_t W25QPageAddress, int32_t F
 	uint32_t flashAddress = AppAddress;
 	uint32_t pageAddress = W25QPageAddress;
 	uint32_t SectorOffset = 0;
-//	uint8_t byteFlash;
-	uint32_t firstAddress = W25QPageAddress * 256;
+	// Sector offset for storing firmwares
 	if(AppAddress == FIRMWARE1_BASE_ADDR){
 		SectorOffset = SECTOR_FIRMWARE1;
 	}
 	else if(AppAddress == FIRMWARE2_BASE_ADDR){
 		SectorOffset = SECTOR_FIRMWARE2;
 	}
+
+	// Erasing allocated sectors to the firmware
 	for(uint32_t j=0; j < ALLOCATED_SECTOR; j++){
 		W25Q_Erase_Sector(SectorOffset +j);
 	}
 
-	/*HAL_FLASH_Unlock();
-	for(uint32_t i=0; i < FirmwareSize; i++){
-		byteFlash = *(__IO uint8_t*)flashAddress;
-		W25Q_Write_Byte(firstAddress, byteFlash);
-		flashAddress++;
-		firstAddress++;
-	}
-	HAL_FLASH_Lock();
-	*/
+	//Writing Flash program on W25Q
 	while(bytesremains > 0){
 		HAL_FLASH_Unlock();
-		for(uint32_t i=0; i < CHUNCKSIZE; i++){
-			MCUFLASHREAD[i] = *(__IO uint8_t*)flashAddress;
+		for(uint32_t i=0; i < CHUNKSIZE; i++){
+			MCUFLASHREAD[i] = *(__IO uint8_t*)flashAddress; // Reading each address of flash and store it in an array
 			flashAddress++;
 		}
 		HAL_FLASH_Lock();
-		W25Q_Write_Page(pageAddress, 0, CHUNCKSIZE, MCUFLASHREAD);
-		pageAddress += 4;
-		bytesremains -= CHUNCKSIZE;
+		W25Q_Write_Page(pageAddress, 0, CHUNKSIZE, MCUFLASHREAD); //writing data on the flash
+		pageAddress += 4;			//increasing the pagenumber by 4 (each chunk is 1028 that is 4*256 (each page is 256 bytes)
+		bytesremains -= CHUNKSIZE;	//subtract chunk from remained data to transfer
 
 	}
+
 	HAL_UART_Transmit(&huart3, (uint8_t *)"Writing Done\n", 14, 100);
 
 
@@ -140,15 +135,15 @@ void WRITE_FROM_W25_TO_MCU(uint32_t AppAddress, uint32_t W25QPageAddress, int32_
 	uint32_t flashAddress = AppAddress;
 	uint32_t pageAddress = W25QPageAddress;
 	while(bytesremains > 0){
-		W25Q_FastRead(pageAddress, 0, CHUNCKSIZE, MCUFLASHREAD);
+		W25Q_FastRead(pageAddress, 0, CHUNKSIZE, MCUFLASHREAD);
 		HAL_FLASH_Unlock();
-		for(uint32_t i=0; i < CHUNCKSIZE; i++){
+		for(uint32_t i=0; i < CHUNKSIZE; i++){
 			HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, flashAddress, MCUFLASHREAD[i]);
 			flashAddress++;
 		}
 		HAL_FLASH_Lock();
 		pageAddress += 4;
-		bytesremains -= CHUNCKSIZE;
+		bytesremains -= CHUNKSIZE;
 	}
 	HAL_UART_Transmit(&huart3, (uint8_t *)"Reading Done\n", 14, 100);
 }
@@ -158,6 +153,10 @@ void WRITE_FROM_W25_TO_MCU(uint32_t AppAddress, uint32_t W25QPageAddress, int32_
 /*
  * ***********************************************************
  * USART Function for reading command for READ/WRITE
+ * W1: write firmware1 to W25Q
+ * W2: write firmware2 to W25Q
+ * R1: Read firmware1 from W25Q and program Flash of the MCU
+ * R2: Read firmware2 from W25Q and program Flash of the MCU
  * ***********************************************************
  * */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
