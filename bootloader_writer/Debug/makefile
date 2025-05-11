@@ -60,8 +60,8 @@ all: main-build
 main-build: bootloader_writer.elf secondary-outputs
 
 # Tool invocations
-bootloader_writer.elf bootloader_writer.map: $(OBJS) $(USER_OBJS) D:\Embedded\STM32ModbusModule\bootloader_writer\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "bootloader_writer.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Embedded\STM32ModbusModule\bootloader_writer\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="bootloader_writer.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+bootloader_writer.elf bootloader_writer.map: $(OBJS) $(USER_OBJS) C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\bootloader_writer\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "bootloader_writer.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\bootloader_writer\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="bootloader_writer.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

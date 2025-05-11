@@ -1,0 +1,10 @@
+14:45:18 **** Incremental Build of configuration Debug for project Firmware1 ****
+make -j16 all 
+arm-none-eabi-size  Firmware1.elf 
+   text	   data	    bss	    dec	    hex	filename
+   8384	     12	   1644	  10040	   2738	Firmware1.elf
+Finished building: default.size.stdout
+ 
+
+14:45:18 Build Finished. 0 errors, 0 warnings. (took 140ms)
+

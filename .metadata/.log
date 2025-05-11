@@ -31,3 +31,12 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2025-05-11 13:01:46.599
 !MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-05-11 13:14:21.450
+!MESSAGE Indexed 'bootloader_writer' (22 sources, 123 headers) in 2.79 sec: 12,190 declarations; 48,926 references; 1 unresolved inclusions; 92 syntax errors; 240 unresolved names (0.39%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-05-11 13:14:29.208
+!MESSAGE Indexed 'Firmware1' (20 sources, 117 headers) in 2.09 sec: 11,150 declarations; 42,509 references; 1 unresolved inclusions; 92 syntax errors; 240 unresolved names (0.45%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2025-05-11 13:14:36.538
+!MESSAGE Indexed 'Firmware2' (20 sources, 117 headers) in 1.77 sec: 11,150 declarations; 42,528 references; 1 unresolved inclusions; 92 syntax errors; 240 unresolved names (0.45%)

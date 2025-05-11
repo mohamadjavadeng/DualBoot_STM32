@@ -60,8 +60,8 @@ all: main-build
 main-build: Firmware1.elf secondary-outputs
 
 # Tool invocations
-Firmware1.elf Firmware1.map: $(OBJS) $(USER_OBJS) D:\Embedded\STM32ModbusModule\Firmware1\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Firmware1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Embedded\STM32ModbusModule\Firmware1\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Firmware1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Firmware1.elf Firmware1.map: $(OBJS) $(USER_OBJS) C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\Firmware1\STM32F407ZGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Firmware1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Mohamad\Documents\GitHub\DualBoot_STM32\Firmware1\STM32F407ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Firmware1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
