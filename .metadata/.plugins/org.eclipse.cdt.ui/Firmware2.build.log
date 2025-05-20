@@ -1,4 +1,4 @@
-14:45:19 **** Incremental Build of configuration Debug for project Firmware2 ****
+11:18:09 **** Incremental Build of configuration Debug for project Firmware2 ****
 make -j16 all 
 arm-none-eabi-size  Firmware2.elf 
    text	   data	    bss	    dec	    hex	filename
@@ -6,5 +6,5 @@ arm-none-eabi-size  Firmware2.elf
 Finished building: default.size.stdout
  
 
-14:45:19 Build Finished. 0 errors, 0 warnings. (took 135ms)
+11:18:10 Build Finished. 0 errors, 0 warnings. (took 187ms)
 
